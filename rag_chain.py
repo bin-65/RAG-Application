@@ -11,14 +11,14 @@ def format_docs(docs):
 def build_rag_chain(vector_store):
     retriever = vector_store.as_retriever(search_kwargs={"k": 3})
     
-    # Secrets retrieval & clean-up
+    # Key validation
     raw_key = st.secrets.get("GROQ_API_KEY", "")
     api_key = str(raw_key).strip().strip('"').strip("'")
     
-    if not api_key or api_key in ["your_groq_api_key_here", "gsk_..."]:
-        raise ValueError("Valid GROQ_API_KEY missing from Streamlit secrets.")
+    if not api_key:
+        raise ValueError("GROQ_API_KEY missing in Streamlit secrets.")
 
-    # Active supported model on Groq API
+    # Currently active production model
     llm = ChatGroq(
         temperature=0.2,
         model_name="llama-3.1-8b-instant",
