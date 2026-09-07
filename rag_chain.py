@@ -16,10 +16,10 @@ def build_rag_chain(vector_store):
     if not api_key or api_key.strip() in ["", "your_groq_api_key_here"]:
         raise ValueError("GROQ_API_KEY is missing or invalid in Streamlit secrets.")
 
-    # Explicit groq_api_key argument passing & validated model endpoint
+    # Fixed model name to currently supported endpoint
     llm = ChatGroq(
         temperature=0.2,
-        model_name="llama-3.3-70b-versatile",
+        model_name="llama3-70b-8192",  # Updated active Groq model ID
         groq_api_key=api_key.strip()
     )
     
