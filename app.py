@@ -13,7 +13,7 @@ if "rag_chain" not in st.session_state:
 if "messages" not in st.session_state:
     st.session_state.messages = []
 
-# Sidebar for document upload & processing
+# Sidebar for file upload
 with st.sidebar:
     st.header("📄 Document Upload")
     uploaded_files = st.file_uploader(
@@ -37,7 +37,7 @@ with st.sidebar:
                 st.session_state.rag_chain = build_rag_chain(vector_store)
                 st.success(f"Successfully indexed {len(chunks)} text chunks!")
             except Exception as e:
-                st.error(f"Error processing documents: {str(e)}")
+                st.error(f"Setup Error: {str(e)}")
 
 # Chat Interface
 st.subheader("💬 Chat with your Documents")
@@ -56,7 +56,7 @@ if user_input := st.chat_input("Ask a question about your uploaded documents..."
             st.warning("Please upload and process at least one document first.")
     else:
         with st.chat_message("assistant"):
-            with st.spinner("Searching context & generating response..."):
+            with st.spinner("Generating response..."):
                 try:
                     response = st.session_state.rag_chain.invoke(user_input)
                     st.write(response)
