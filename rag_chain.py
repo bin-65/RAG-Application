@@ -11,17 +11,17 @@ def format_docs(docs):
 def build_rag_chain(vector_store):
     retriever = vector_store.as_retriever(search_kwargs={"k": 3})
     
-    # Key validation
+    # Retrieve & clean Groq API Key
     raw_key = st.secrets.get("GROQ_API_KEY", "")
     api_key = str(raw_key).strip().strip('"').strip("'")
     
     if not api_key:
         raise ValueError("GROQ_API_KEY missing in Streamlit secrets.")
 
-    # Currently active production model
+    # Model configured to openai/gpt-oss-120b
     llm = ChatGroq(
         temperature=0.2,
-        model_name="llama-3.1-8b-instant",
+        model_name="openai/gpt-oss-120b",
         groq_api_key=api_key
     )
     
