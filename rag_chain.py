@@ -11,16 +11,18 @@ def format_docs(docs):
 def build_rag_chain(vector_store):
     retriever = vector_store.as_retriever(search_kwargs={"k": 3})
     
-    # Retrieve Groq API Key
-    api_key = st.secrets.get("GROQ_API_KEY")
-    if not api_key or api_key.strip() in ["", "your_groq_api_key_here"]:
-        raise ValueError("GROQ_API_KEY is missing or invalid in Streamlit secrets.")
+    # Secrets retrieval & clean-up
+    raw_key = st.secrets.get("GROQ_API_KEY", "")
+    api_key = str(raw_key).strip().strip('"').strip("'")
+    
+    if not api_key or api_key in ["your_groq_api_key_here", "gsk_..."]:
+        raise ValueError("Valid GROQ_API_KEY missing from Streamlit secrets.")
 
-    # Fixed model name to currently supported endpoint
+    # Active supported model on Groq API
     llm = ChatGroq(
         temperature=0.2,
-        model_name="llama3-70b-8192",  # Updated active Groq model ID
-        groq_api_key=api_key.strip()
+        model_name="llama-3.1-8b-instant",
+        groq_api_key=api_key
     )
     
     prompt = PromptTemplate.from_template(SYSTEM_PROMPT)
